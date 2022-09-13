@@ -1,5 +1,7 @@
 defmodule Tailwind do
-  # https://github.com/tailwindlabs/tailwindcss/releases
+
+  @default_base_url "https://github.com/tailwindlabs/tailwindcss/releases/download"
+
   @latest_version "3.1.6"
 
   @moduledoc """
@@ -119,6 +121,13 @@ defmodule Tailwind do
   def latest_version, do: @latest_version
 
   @doc """
+  Returns the base url used to form the download url.
+  """
+  def base_url do
+    Application.get_env(:tailwind, :base_url, @default_base_url)
+  end
+
+  @doc """
   Returns the configured tailwind version.
   """
   def configured_version do
@@ -224,7 +233,7 @@ defmodule Tailwind do
   def install do
     version = configured_version()
     name = "tailwindcss-#{target()}"
-    url = "https://github.com/tailwindlabs/tailwindcss/releases/download/v#{version}/#{name}"
+    url = Path.join(base_url(), "v#{version}/#{name}")
     bin_path = bin_path()
     tailwind_config_path = Path.expand("assets/tailwind.config.js")
     binary = fetch_body!(url)
